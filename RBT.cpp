@@ -49,3 +49,57 @@ int main() {
     }
   }
 }
+
+void leftRotate(Node*& r, Node* x) {
+
+  Node* y = x->right;
+
+  // Handle sub-trees
+  x->right = y->left;
+  
+  if (y->left) {
+    y->left->parent = x;
+  }
+
+  // Handle node relationships
+  y->parent = x->parent;
+
+  if (!x->parent) {
+    r = y;
+  } else if (x->parent->left == x) {
+    x->parent->left = y;
+  } else if (x->parent->right == x) {
+    x->parent->right = y;
+  }
+
+  x->parent = y;
+  y->left = x;
+}
+
+void rightRotate(Node*& r, Node* x) {
+
+  Node* y = x->left;
+
+  // Handle sub-trees
+  x->left = y->right;
+
+  if (y->right) {
+    y->right->parent = x;
+  }
+
+  // Handle node relationships
+
+  y->parent = x->parent;
+
+  if (!x->parent) {
+    r = y;
+  } else if (x->parent->left == x) {
+    x->parent->left = y;
+  } else if (x->parent->right == x) {
+    x->parent->right = y;
+  }
+
+  x->parent = y;
+  y->right = x;
+  
+}
