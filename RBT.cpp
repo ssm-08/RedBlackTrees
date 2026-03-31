@@ -7,6 +7,7 @@ using namespace std;
 struct Node {
 
   int value;
+  int color;
   Node* left;
   Node* right;
   Node* parent;
@@ -14,7 +15,7 @@ struct Node {
 };
 
 void print();
-void insertion();
+void insertion(Node*& r, Node* c, Node* n);
 void fixInsert();
 
 void leftRotate();
@@ -54,6 +55,10 @@ void leftRotate(Node*& r, Node* x) {
 
   Node* y = x->right;
 
+  if (y == NULL) {
+    return;
+  }
+  
   // Handle sub-trees
   x->right = y->left;
   
@@ -64,7 +69,7 @@ void leftRotate(Node*& r, Node* x) {
   // Handle node relationships
   y->parent = x->parent;
 
-  if (!x->parent) {
+  if (x->parent == NULL) {
     r = y;
   } else if (x->parent->left == x) {
     x->parent->left = y;
@@ -80,6 +85,10 @@ void rightRotate(Node*& r, Node* x) {
 
   Node* y = x->left;
 
+  if (y == NULL) {
+    return;
+  }
+  
   // Handle sub-trees
   x->left = y->right;
 
@@ -91,7 +100,7 @@ void rightRotate(Node*& r, Node* x) {
 
   y->parent = x->parent;
 
-  if (!x->parent) {
+  if (x->parent == NULL) {
     r = y;
   } else if (x->parent->left == x) {
     x->parent->left = y;
@@ -101,5 +110,28 @@ void rightRotate(Node*& r, Node* x) {
 
   x->parent = y;
   y->right = x;
-  
+}
+
+void insertion(Node*& r, Node* c, Node* n) {
+
+  if (r == NULL) {
+    r = n;
+    // insert fix
+  } else if (n->value < c->value) {
+    n->parent = c;
+
+    if (c->left == NULL) {
+      c->left = n;
+    } else {
+      insertion(r, c->left, n);
+    }
+  } else if (n->value > c->value) {
+    n->parent = c;
+
+    if (c->right == NULL) {
+      c->right = n;
+    } else {
+      insertion(r, c->right, n);
+    }
+  }
 }
