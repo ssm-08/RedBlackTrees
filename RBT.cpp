@@ -63,7 +63,7 @@ int main() {
       cin >> num;
       cout << endl;
 
-      leftRotate(root, search(root, num));
+      rightRotate(root, search(root, num));
     } else if (strcmp(input, QUIT) == 0) { // Quit
       run = false;
     }
