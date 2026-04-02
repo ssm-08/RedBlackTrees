@@ -7,19 +7,20 @@ using namespace std;
 struct Node {
 
   int value;
-  int color;
+  bool red;
   Node* left;
   Node* right;
   Node* parent;
   
 };
 
-void print();
+void print(Node* c, int depth);
+Node* search(Node* c, int n);
 void insertion(Node*& r, Node* c, Node* n);
-void fixInsert();
 
-void leftRotate();
-void rightRotate();
+void fixInsert();
+void leftRotate(Node*& r, Node* x);
+void rightRotate(Node*& r, Node* x);
 
 int main() {
 
@@ -32,6 +33,7 @@ int main() {
   
   // const char* SEARCH = "SEARCH";
   const char* INS = "INSERT";
+  const char* ROT = "ROTATE";
   //  const char* DEL = "DELETE";
   const char* PRINT = "PRINT";
   const char* QUIT = "QUIT";
@@ -44,7 +46,18 @@ int main() {
     cout << endl;
 
     if (strcmp(input, INS) == 0) { // Insert value
+      cout << "Enter number: ";
+      cin >> num;
+      cout << endl;
+
+      if (!search(root, num)) {
+	Node* data = new Node{num, true, NULL, NULL, NULL};
+	insertion(root, root, data);
+      }
     } else if (strcmp(input, PRINT) == 0) { // Print tree
+      if (root) {
+	print(root, 0);
+      }
     } else if (strcmp(input, QUIT) == 0) { // Quit
       run = false;
     }
@@ -110,6 +123,43 @@ void rightRotate(Node*& r, Node* x) {
 
   x->parent = y;
   y->right = x;
+}
+
+void print(Node* c, int depth) {
+
+  Node* left = c->left;
+  Node* right = c->right;
+
+  if (right != NULL) {
+    print(right, depth + 1);
+  }
+  
+  for (int i = 0; i < depth; i++) {
+    cout << "\t";
+  }
+  
+  cout << c->value << endl;
+
+  if (left != NULL) {
+    print(left, depth + 1);
+  }
+}
+
+Node* search(Node* c, int n) {
+
+  // End or no node
+  if (c == NULL) {
+    return c;
+  }
+
+  // Search and return
+  if (n < c->value) {
+    return search(c->left, n);
+  } else if (n > c->value) {
+    return search(c->right, n);
+  } else {
+    return c;
+  }
 }
 
 void insertion(Node*& r, Node* c, Node* n) {
