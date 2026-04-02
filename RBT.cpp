@@ -58,6 +58,12 @@ int main() {
       if (root) {
 	print(root, 0);
       }
+    } else if (strcmp(input, ROT) == 0) {
+      cout << "Enter number: ";
+      cin >> num;
+      cout << endl;
+
+      leftRotate(root, search(root, num));
     } else if (strcmp(input, QUIT) == 0) { // Quit
       run = false;
     }
