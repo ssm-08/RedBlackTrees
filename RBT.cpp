@@ -18,7 +18,7 @@ void print(Node* c, int depth);
 Node* search(Node* c, int n);
 void insertion(Node*& r, Node* c, Node* n);
 
-void fixInsert();
+void insertFix(Node*& r, Node* c);
 void leftRotate(Node*& r, Node* x);
 void rightRotate(Node*& r, Node* x);
 
@@ -58,12 +58,6 @@ int main() {
       if (root) {
 	print(root, 0);
       }
-    } else if (strcmp(input, ROT) == 0) {
-      cout << "Enter number: ";
-      cin >> num;
-      cout << endl;
-
-      rightRotate(root, search(root, num));
     } else if (strcmp(input, QUIT) == 0) { // Quit
       run = false;
     }
@@ -131,6 +125,65 @@ void rightRotate(Node*& r, Node* x) {
   y->right = x;
 }
 
+void insertFix(Node*& r, Node* c) {
+
+  Node* p = c->parent;
+  
+  if (p == NULL) { // Root
+    c->red = false;
+    return;
+  }
+
+  Node* gP = p->parent;
+
+  if (p->red) {
+    if (gP->left = p) { // Left side
+      if (gP != NULL && gP->right->red) { // Red uncle
+
+	gP->red = true;
+	gP->right->red = false;
+	gP->left->red = false;
+
+	insertFix(r,gP);
+	
+      } else if (p->right == c) { // Black uncle: corner case
+
+	leftRotate(r, c);
+	insertFix(r, p);
+	
+      } else { // Black uncle: slant case
+
+	rightRotate(r, gP);
+	p->red = false;
+	gP->red = true;
+	
+      }
+    } else { // Right side
+
+      if (gP != NULL && gP->left->red) { // Red uncle
+
+        gP->red = true;
+        gP->right->red = false;
+        gP->left->red = false;
+
+        insertFix(r, gP);
+
+      } else if (p->left == c) { // Black uncle: corner case
+
+        rightRotate(r, c);
+        insertFix(r, p);
+
+      } else { // Black uncle: slant case
+
+        leftRotate(r, gP);
+        p->red = false;
+        gP->red = true;
+
+      }
+    }
+  }
+}
+
 void print(Node* c, int depth) {
 
   Node* left = c->left;
@@ -142,6 +195,12 @@ void print(Node* c, int depth) {
   
   for (int i = 0; i < depth; i++) {
     cout << "\t";
+  }
+
+  if (c->red) {
+    cout << "R";
+  } else {
+    cout << "B";
   }
   
   cout << c->value << endl;
@@ -172,12 +231,13 @@ void insertion(Node*& r, Node* c, Node* n) {
 
   if (r == NULL) {
     r = n;
-    // insert fix
+    insertFix(r, n);
   } else if (n->value < c->value) {
     n->parent = c;
 
     if (c->left == NULL) {
       c->left = n;
+      insertFix(r, n);
     } else {
       insertion(r, c->left, n);
     }
@@ -186,6 +246,7 @@ void insertion(Node*& r, Node* c, Node* n) {
 
     if (c->right == NULL) {
       c->right = n;
+      insertFix(r, n);
     } else {
       insertion(r, c->right, n);
     }
