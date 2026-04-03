@@ -66,6 +66,8 @@ int main() {
 
 void leftRotate(Node*& r, Node* x) {
 
+  cout << "left beg" << endl;
+  
   Node* y = x->right;
 
   if (y == NULL) {
@@ -92,10 +94,14 @@ void leftRotate(Node*& r, Node* x) {
 
   x->parent = y;
   y->left = x;
+
+  cout << "left end" << endl;
 }
 
 void rightRotate(Node*& r, Node* x) {
 
+  cout << "right beg" << endl;
+  
   Node* y = x->left;
 
   if (y == NULL) {
@@ -123,6 +129,8 @@ void rightRotate(Node*& r, Node* x) {
 
   x->parent = y;
   y->right = x;
+
+  cout << "right end" << endl;
 }
 
 void insertFix(Node*& r, Node* c) {
@@ -137,22 +145,28 @@ void insertFix(Node*& r, Node* c) {
   Node* gP = p->parent;
 
   if (p->red) {
-    if (gP->left = p) { // Left side
-      if (gP != NULL && gP->right->red) { // Red uncle
+    if (gP->left == p) { // Left side
+      if (gP->right != NULL && gP->right->red) { // Red uncle
 
+	cout << "L Red uncle" << endl;
+	
 	gP->red = true;
 	gP->right->red = false;
 	gP->left->red = false;
 
-	insertFix(r,gP);
+	insertFix(r, gP);
 	
       } else if (p->right == c) { // Black uncle: corner case
 
-	leftRotate(r, c);
+	cout << "Black uncle" << endl;
+	
+	leftRotate(r, p);
 	insertFix(r, p);
 	
       } else { // Black uncle: slant case
 
+	cout << "Black uncle" << endl;
+	
 	rightRotate(r, gP);
 	p->red = false;
 	gP->red = true;
@@ -160,8 +174,10 @@ void insertFix(Node*& r, Node* c) {
       }
     } else { // Right side
 
-      if (gP != NULL && gP->left->red) { // Red uncle
+      if (gP->left != NULL && gP->left->red) { // Red uncle
 
+	cout << "R Red uncle" << endl;
+	
         gP->red = true;
         gP->right->red = false;
         gP->left->red = false;
@@ -170,11 +186,15 @@ void insertFix(Node*& r, Node* c) {
 
       } else if (p->left == c) { // Black uncle: corner case
 
-        rightRotate(r, c);
+	cout << "Black uncle" << endl;
+	
+        rightRotate(r, p);
         insertFix(r, p);
 
       } else { // Black uncle: slant case
 
+	cout << "Black uncle" << endl;
+	
         leftRotate(r, gP);
         p->red = false;
         gP->red = true;
@@ -198,7 +218,7 @@ void print(Node* c, int depth) {
   }
 
   if (c->red) {
-    cout << "R";
+    cout << "\033[31mR\033[0m";
   } else {
     cout << "B";
   }
