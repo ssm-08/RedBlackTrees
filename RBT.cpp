@@ -1,5 +1,7 @@
 #include <iostream>
 #include <cstring>
+#include <fstream>
+#include <cstdlib>
 
 using namespace std;
 
@@ -33,7 +35,8 @@ int main() {
   
   // const char* SEARCH = "SEARCH";
   const char* INS = "INSERT";
-  const char* ROT = "ROTATE";
+  const char* UPL = "UPLOAD";
+  // const char* ROT = "ROTATE";
   //  const char* DEL = "DELETE";
   const char* PRINT = "PRINT";
   const char* QUIT = "QUIT";
@@ -54,6 +57,32 @@ int main() {
 	Node* data = new Node{num, true, NULL, NULL, NULL};
 	insertion(root, root, data);
       }
+    } else if (strcmp(input, UPL) == 0) { // File read
+
+      int i = 0;
+      fstream data("data.txt");
+      data.seekg(0, data.end);
+      i = data.tellg();
+      i++;
+      data.seekg(0, data.beg);
+
+      char numbers[i];
+      data.getline(numbers, i);
+      char* value = strtok(numbers, " ");
+
+      while (value != NULL) {
+
+	num = atoi(value);
+
+	if (!search(root, num)) {
+	  Node* data = new Node{num, true, NULL, NULL, NULL};
+	  insertion(root, root, data);
+	}
+
+	value = strtok(NULL, " ");
+      }
+
+      
     } else if (strcmp(input, PRINT) == 0) { // Print tree
       if (root) {
 	print(root, 0);
@@ -116,7 +145,6 @@ void rightRotate(Node*& r, Node* x) {
   }
 
   // Handle node relationships
-
   y->parent = x->parent;
 
   if (x->parent == NULL) {
@@ -158,14 +186,14 @@ void insertFix(Node*& r, Node* c) {
 	
       } else if (p->right == c) { // Black uncle: corner case
 
-	cout << "Black uncle" << endl;
+	cout << "L C Black uncle" << endl;
 	
 	leftRotate(r, p);
 	insertFix(r, p);
 	
       } else { // Black uncle: slant case
 
-	cout << "Black uncle" << endl;
+	cout << "L S Black uncle" << endl;
 	
 	rightRotate(r, gP);
 	p->red = false;
@@ -186,14 +214,14 @@ void insertFix(Node*& r, Node* c) {
 
       } else if (p->left == c) { // Black uncle: corner case
 
-	cout << "Black uncle" << endl;
+	cout << "R C Black uncle" << endl;
 	
         rightRotate(r, p);
         insertFix(r, p);
 
       } else { // Black uncle: slant case
 
-	cout << "Black uncle" << endl;
+	cout << "R S Black uncle" << endl;
 	
         leftRotate(r, gP);
         p->red = false;
